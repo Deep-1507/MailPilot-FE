@@ -76,22 +76,24 @@ export default function SentMails() {
                 },
             });
 
-            if (response.status === 200) {
+           if(response.data.length != 0){
+             if (response.status === 200) {
                 const sortedMails = response.data.sort((a: { createdAt: string | number | Date; }, b: { createdAt: string | number | Date; }) =>
                     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                 );
 
                 setSentMails(sortedMails);
-                enqueueSnackbar("Data fetched successfully", { variant: "success" });
+                // enqueueSnackbar("Data fetched successfully", { variant: "success" });
             } else {
                 enqueueSnackbar("Failed to fetch data", { variant: "error" });
             }
+           }
         } catch (err) {
             console.error("API Error:", err);
             if ((err as any).response) {
               enqueueSnackbar((err as any).response.data.message || "Something went wrong.", { variant: "error" });
             } else {
-              enqueueSnackbar("An error occurred. Please check your input.", { variant: "error" });
+              enqueueSnackbar("An error occurred.", { variant: "error" });
             }
           }
     };
@@ -112,7 +114,7 @@ export default function SentMails() {
             {/* ===== Main ===== */}
             <Main>
                 <div className='mb-2 flex items-center justify-between space-y-2'>
-                    <h1 className='text-2xl font-bold tracking-tight'>Dashboard</h1>
+                    <h1 className='text-2xl font-bold tracking-tight'>Mail History</h1>
                     <div className='flex items-center space-x-2'>
                         {/* <Button>Download</Button> */}
                     </div>

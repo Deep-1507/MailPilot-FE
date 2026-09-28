@@ -119,7 +119,7 @@ export default function ManageCreds() {
             });
 
             if (response.status === 200) {
-                enqueueSnackbar("Credentials fetched successfully", { variant: "success" });
+                // enqueueSnackbar("Credentials fetched successfully", { variant: "success" });
                 setCredentials(response.data);
             }
         } catch (err) {

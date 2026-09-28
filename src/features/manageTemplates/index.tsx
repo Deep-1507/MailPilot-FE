@@ -122,7 +122,7 @@ export default function ManageTemplate() {
         });
 
       if (response.status === 200) {
-        enqueueSnackbar("Templates fetched successfully", { variant: "success" });
+        // enqueueSnackbar("Templates fetched successfully", { variant: "success" });
         setTemplates(response.data)
       } else {
         enqueueSnackbar("Something went wrong. Please try again.", { variant: "error" });

@@ -118,7 +118,7 @@ export default function ManageInternalUsers() {
             setBusinessUsers(response.data.group.users);
             setGroupName(response.data.group.groupName)
             console.log(response.data.group.users)
-            enqueueSnackbar("Business Users fetched successfully", { variant: "success" });
+            // enqueueSnackbar("Business Users fetched successfully", { variant: "success" });
           } else {
             enqueueSnackbar(response.data.message || "Something went wrong.", { variant: "error" });
           }

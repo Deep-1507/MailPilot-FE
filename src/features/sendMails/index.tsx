@@ -229,7 +229,7 @@ export default function SendMails() {
         });
 
       if (response.status === 200) {
-        enqueueSnackbar("API KEY fetched successfully", { variant: "success" });
+        // enqueueSnackbar("API KEY fetched successfully", { variant: "success" });
         setapiKey(response.data.APIKEY)
       } else {
         enqueueSnackbar("Something went wrong. Please try again.", { variant: "error" });
@@ -268,7 +268,7 @@ export default function SendMails() {
         });
 
       if (response.status === 200) {
-        enqueueSnackbar("Templates fetched successfully", { variant: "success" });
+        // enqueueSnackbar("Templates fetched successfully", { variant: "success" });
         setTemplates(response.data)
       } else {
         enqueueSnackbar("Something went wrong. Please try again.", { variant: "error" });
@@ -308,7 +308,7 @@ export default function SendMails() {
         });
 
       if (response.status === 200) {
-        enqueueSnackbar("Credential fetched successfully", { variant: "success" });
+        // enqueueSnackbar("Credential fetched successfully", { variant: "success" });
         setCredentials(response.data)
       } else {
         enqueueSnackbar("Something went wrong. Please try again.", { variant: "error" });
@@ -348,7 +348,7 @@ export default function SendMails() {
 
       if (response.status === 200) {
         setBusinessGroups(response.data.groups);
-        enqueueSnackbar("Business Users fetched successfully", { variant: "success" });
+        // enqueueSnackbar("Business Users fetched successfully", { variant: "success" });
       } else {
         enqueueSnackbar(response.data.message || "Something went wrong.", { variant: "error" });
       }

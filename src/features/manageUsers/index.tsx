@@ -135,7 +135,7 @@ export default function ManageUsers() {
                 );
 
                 setBusinessUsers(sortedUsers);
-                enqueueSnackbar("Business Users fetched successfully", { variant: "success" });
+                // enqueueSnackbar("Business Groups fetched successfully", { variant: "success" });
             } else {
                 enqueueSnackbar(response.data.message || "Something went wrong.", { variant: "error" });
             }
@@ -277,13 +277,13 @@ export default function ManageUsers() {
         }
     };
 
-    useEffect(() => {
-        if (selectedGroup) {
-            form.reset({
-                groupName: selectedGroup?.groupName || ''
-            });
-        }
-    }, [selectedGroup, form]);
+    // useEffect(() => {
+    //     if (selectedGroup) {
+    //         form.reset({
+    //             groupName: selectedGroup?.groupName || ''
+    //         });
+    //     }
+    // }, [selectedGroup, form]);
 
 
 
@@ -378,34 +378,54 @@ export default function ManageUsers() {
                                                     hour12: true,
                                                 })}
                                             </TableCell>
-                                            
+
                                             <TableCell>
-                                            
-                                           
+
+
                                                 <div className="flex items-center gap-2">
                                                     {/* Add Users Dialog */}
                                                     <Link
-                                                    to="/manageInternalUsers"
-                                                    search={{ id: item._id }}
-                                                >
-                                                 <Button >
-                                                                <Users /> Manage Users
-                                                            </Button>
-                                                </Link>
-                                                    <Dialog>
+                                                        to="/manageInternalUsers"
+                                                        search={{ id: item._id }}
+                                                    >
+                                                        <Button >
+                                                            <Users /> Manage Users
+                                                        </Button>
+                                                    </Link>
+                                                    <Dialog
+                                                        onOpenChange={(open) => {
+                                                            if (open) {
+                                                                setSelectedGroup(item);
+                                                                userform.reset({
+                                                                    name: "",
+                                                                    email: "",
+                                                                });
+                                                            } else {
+                                                                setSelectedGroup(null);
+                                                            }
+                                                        }}
+                                                    >
                                                         <DialogTrigger asChild>
-                                                            <Button onClick={() => setSelectedGroup(item)}>
+                                                            <Button>
                                                                 <Plus /> Add Users
                                                             </Button>
                                                         </DialogTrigger>
+
                                                         <DialogContent>
                                                             <DialogHeader>
-                                                                <strong>Group Name: </strong><p>{item.groupName}</p>
+                                                                <strong>Group Name:</strong>
+                                                                <p>{item.groupName}</p>
+
                                                                 <DialogTitle>Add User</DialogTitle>
+
                                                                 <DialogDescription>
                                                                     <Form {...userform}>
-                                                                        <form onSubmit={userform.handleSubmit((data) =>
-                                                                            onSubmitUser(data, selectedGroup?._id))} className="space-y-8">
+                                                                        <form
+                                                                            onSubmit={userform.handleSubmit((data) =>
+                                                                                onSubmitUser(data, item._id)
+                                                                            )}
+                                                                            className="space-y-8"
+                                                                        >
                                                                             <FormField
                                                                                 control={userform.control}
                                                                                 name="name"
@@ -413,7 +433,10 @@ export default function ManageUsers() {
                                                                                     <FormItem>
                                                                                         <FormLabel>Enter the User's full name</FormLabel>
                                                                                         <FormControl>
-                                                                                            <Input placeholder="Deependra Kumar" {...field} />
+                                                                                            <Input
+                                                                                                placeholder="Deependra Kumar"
+                                                                                                {...field}
+                                                                                            />
                                                                                         </FormControl>
                                                                                         <FormDescription>
                                                                                             This is the name by which the users will be visible.
@@ -422,6 +445,7 @@ export default function ManageUsers() {
                                                                                     </FormItem>
                                                                                 )}
                                                                             />
+
                                                                             <FormField
                                                                                 control={userform.control}
                                                                                 name="email"
@@ -429,7 +453,10 @@ export default function ManageUsers() {
                                                                                     <FormItem>
                                                                                         <FormLabel>User's Email Id</FormLabel>
                                                                                         <FormControl>
-                                                                                            <Input placeholder="deependra@rapydlaunch.com" {...field} />
+                                                                                            <Input
+                                                                                                placeholder="deependra@rapydlaunch.com"
+                                                                                                {...field}
+                                                                                            />
                                                                                         </FormControl>
                                                                                         <FormDescription>
                                                                                             The mails will be sent to this email id.
@@ -438,6 +465,7 @@ export default function ManageUsers() {
                                                                                     </FormItem>
                                                                                 )}
                                                                             />
+
                                                                             <Button disabled={isUserSubmitting} type="submit">
                                                                                 Submit
                                                                             </Button>
@@ -449,20 +477,33 @@ export default function ManageUsers() {
                                                     </Dialog>
 
                                                     {/* Edit User Dialog */}
-                                                    <Dialog>
+                                                    <Dialog
+                                                        onOpenChange={(open) => {
+                                                            if (open) {
+                                                                setSelectedGroup(item);
+                                                                form.reset({
+                                                                    groupName: item.groupName,
+                                                                });
+                                                            } else {
+                                                                setSelectedGroup(null);
+                                                            }
+                                                        }}
+                                                    >
                                                         <DialogTrigger asChild>
-                                                            <Button onClick={() => setSelectedGroup(item)}>
+                                                            <Button>
                                                                 <Pencil size={20} />
                                                             </Button>
                                                         </DialogTrigger>
+
                                                         <DialogContent>
                                                             <DialogHeader>
                                                                 <DialogTitle>Edit Group</DialogTitle>
+
                                                                 <DialogDescription>
                                                                     <Form {...form}>
                                                                         <form
                                                                             onSubmit={form.handleSubmit((data) =>
-                                                                                onSubmit(data, selectedGroup?._id)
+                                                                                onSubmit(data, item._id)
                                                                             )}
                                                                             className="space-y-8"
                                                                         >

@@ -46,6 +46,8 @@ const router = useRouter();
     }
   });
 
+  const { reset } = form;
+
   const {
     formState: { errors, isSubmitting }
   } = form;
@@ -78,9 +80,10 @@ const router = useRouter();
 
       if (response.status === 201) {
         enqueueSnackbar("Credential created successfully", { variant: "success" });
-        setTimeout(() => {
-          window.location.reload();
-      }, 1000)
+        reset();
+      //   setTimeout(() => {
+      //     window.location.reload();
+      // }, 1000)
       } else {
         enqueueSnackbar("Something went wrong. Please try again.", { variant: "error" });
       }
@@ -127,7 +130,7 @@ const router = useRouter();
                   <FormItem>
                     <FormLabel>Enter Company or Enterprise Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="RapydLaunch" {...field} />
+                      <Input placeholder="MailPilot" {...field} />
                     </FormControl>
                     <FormDescription>
                       This is the name by which you will manage the emails.
@@ -143,7 +146,7 @@ const router = useRouter();
                   <FormItem>
                     <FormLabel>Sender Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="deependra@rapydlaunch.com" {...field} />
+                      <Input placeholder="deependra@mailpilot.com" {...field} />
                     </FormControl>
                     <FormDescription>
                       This is the mail id which will be used to send mails.

@@ -90,7 +90,7 @@ export default function Dashboard() {
 
       if (response.status === 200) {
         setBusinessUsers(response.data.groups);
-        enqueueSnackbar("Business Users fetched successfully", { variant: "success" });
+        // enqueueSnackbar("Business Users fetched successfully", { variant: "success" });
       } else {
         enqueueSnackbar(response.data.message || "Something went wrong.", { variant: "error" });
       }
@@ -128,7 +128,7 @@ export default function Dashboard() {
         });
 
       if (response.status === 200) {
-        enqueueSnackbar("Credential fetched successfully", { variant: "success" });
+        // enqueueSnackbar("Credential fetched successfully", { variant: "success" });
         setCredentials(response.data)
       } else {
         enqueueSnackbar("Something went wrong. Please try again.", { variant: "error" });
@@ -167,7 +167,7 @@ export default function Dashboard() {
         });
 
       if (response.status === 200) {
-        enqueueSnackbar("Templates fetched successfully", { variant: "success" });
+        // enqueueSnackbar("Templates fetched successfully", { variant: "success" });
         setTemplates(response.data)
       } else {
         enqueueSnackbar("Something went wrong. Please try again.", { variant: "error" });
@@ -240,17 +240,22 @@ export default function Dashboard() {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
+
+
       if (response.status === 200) {
         const sortedMails = response.data.sort((a: { createdAt: string | number | Date; }, b: { createdAt: string | number | Date; }) => 
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
   
         setSentMails(sortedMails);
-        enqueueSnackbar("Data fetched successfully", { variant: "success" });
-      } else {
+        // enqueueSnackbar("Data fetched successfully", { variant: "success" });
+      }  else {
         enqueueSnackbar("Failed to fetch data", { variant: "error" });
       }
+      
+     
+  
     } catch (err) {
       console.error("API Error:", err);
       enqueueSnackbar("Failed to fetch data", { variant: "error" });

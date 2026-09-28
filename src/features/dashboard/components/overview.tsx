@@ -42,7 +42,7 @@ export function Overview() {
 
       if (response.status === 200) {
         processChartData(response.data);
-        enqueueSnackbar("Data Fetched Successfully", { variant: "success" });
+        // enqueueSnackbar("Data Fetched Successfully", { variant: "success" });
       }
       else {
         enqueueSnackbar("Failed to fetch data", { variant: "error" });

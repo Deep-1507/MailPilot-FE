@@ -100,9 +100,9 @@ export default function CreateTemplate() {
 
       if (response.status === 201) {
         enqueueSnackbar("Template created successfully", { variant: "success" });
-        setTimeout(() => {
-          window.location.reload();
-      }, 1000)
+      //   setTimeout(() => {
+      //     window.location.reload();
+      // }, 1000)
         return;
       } else {
         enqueueSnackbar("Something went wrong. Please try again.", { variant: "error" });

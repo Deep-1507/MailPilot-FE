@@ -151,7 +151,7 @@ export default function IntegrateAPI() {
                 });
 
             if (response.status === 200) {
-                enqueueSnackbar("API KEY fetched successfully", { variant: "success" });
+                // enqueueSnackbar("API KEY fetched successfully", { variant: "success" });
                 setAPIKEY(response.data.APIKEY)
             } else {
                 enqueueSnackbar("Something went wrong. Please try again.", { variant: "error" });
@@ -190,7 +190,7 @@ export default function IntegrateAPI() {
                 });
 
             if (response.status === 200) {
-                enqueueSnackbar("Templates fetched successfully", { variant: "success" });
+                // enqueueSnackbar("Templates fetched successfully", { variant: "success" });
                 setTemplates(response.data)
             } else {
                 enqueueSnackbar("Something went wrong. Please try again.", { variant: "error" });
@@ -229,7 +229,7 @@ export default function IntegrateAPI() {
                 });
 
             if (response.status === 200) {
-                enqueueSnackbar("Credential fetched successfully", { variant: "success" });
+                // enqueueSnackbar("Credential fetched successfully", { variant: "success" });
                 setCredentials(response.data)
             } else {
                 enqueueSnackbar("Something went wrong. Please try again.", { variant: "error" });
