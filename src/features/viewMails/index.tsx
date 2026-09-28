@@ -276,7 +276,7 @@ export default function ViewMails() {
             const response = await axios.post(
                 `${BACKEND_URL}/api/mail/connect`,
                 {
-                    userId,
+                    userId:user.id,
                     credId: values.credId,
                     page: 1,
                     limit: 50,
