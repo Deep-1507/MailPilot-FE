@@ -65,7 +65,8 @@ export default function ManageCreds() {
     const [selectedCredential, setSelectedCredential] = useState<Credential | null>(null);
     const [credentials, setCredentials] = useState<Credential[]>([]);
     const hasFetched = useRef(false);
-    const [open, setOpen] = useState(false);
+    // const [open, setOpen] = useState(false);
+    const [deleteId, setDeleteId] = useState<string | null>(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -87,15 +88,25 @@ export default function ManageCreds() {
         }
     }, []);
 
+    // useEffect(() => {
+    //     if (selectedCredential) {
+    //         form.reset({
+    //             companyName: selectedCredential.companyName || "",
+    //             senderEmail: selectedCredential.senderEmail || "",
+    //             password: selectedCredential.password || "",
+    //         });
+    //     }
+    // }, [selectedCredential, form]);
+
     useEffect(() => {
         if (selectedCredential) {
             form.reset({
-                companyName: selectedCredential.companyName || "",
-                senderEmail: selectedCredential.senderEmail || "",
-                password: selectedCredential.password || "",
+                companyName: selectedCredential.companyName,
+                senderEmail: selectedCredential.senderEmail,
+                password: selectedCredential.password,
             });
         }
-    }, [selectedCredential, form]);
+    }, [selectedCredential]);
 
 
     const fetchCredentials = async () => {
@@ -270,64 +281,49 @@ export default function ManageCreds() {
 
                                             <div className="w-full flex justify-center pb-4">
                                                 {/* Dialog Trigger Button */}
-                                                <Dialog>
+                                                <div className="w-full flex justify-center pb-4">
                                                     <div className="flex items-center gap-2">
-                                                        <DialogTrigger asChild>
-                                                            <Button onClick={() => setSelectedCredential(credential)}>
 
-                                                                <Pencil size={20} />
-                                                            </Button>
-
-                                                        </DialogTrigger>
-                                                        <Dialog open={open} onOpenChange={setOpen}>
+                                                        {/* ================= EDIT DIALOG ================= */}
+                                                        <Dialog>
                                                             <DialogTrigger asChild>
-                                                                <Button className="bg-red-600">
-                                                                    <Trash size={20} />
+                                                                <Button onClick={() => setSelectedCredential(credential)}>
+                                                                    <Pencil size={20} />
                                                                 </Button>
                                                             </DialogTrigger>
+
                                                             <DialogContent>
                                                                 <DialogHeader>
-                                                                    <DialogTitle>Confirm Deletion</DialogTitle>
+                                                                    <DialogTitle>{selectedCredential?.companyName}</DialogTitle>
+                                                                    <DialogDescription>
+                                                                        Update the credential details below.
+                                                                    </DialogDescription>
                                                                 </DialogHeader>
-                                                                <p>Are you sure you want to delete this credential? This action cannot be undone.</p>
-                                                                <DialogFooter>
-                                                                    <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-                                                                    <Button
-                                                                        className="bg-red-600"
-                                                                        onClick={() => {
-                                                                            handleDelete(credential._id);
-                                                                            setOpen(false);
-                                                                        }}
-                                                                    >
-                                                                        Confirm Delete
-                                                                    </Button>
-                                                                </DialogFooter>
-                                                            </DialogContent>
-                                                        </Dialog>
-                                                    </div>
 
-                                                    <DialogContent>
-                                                        <DialogHeader>
-                                                            <DialogTitle><p>{selectedCredential?.companyName}</p></DialogTitle>
-                                                            <DialogDescription>
                                                                 <Form {...form}>
-                                                                    <form onSubmit={form.handleSubmit((data) => onSubmit(data, selectedCredential?._id))} className="space-y-8">
+                                                                    <form
+                                                                        onSubmit={form.handleSubmit((data) =>
+                                                                            onSubmit(data, selectedCredential?._id)
+                                                                        )}
+                                                                        className="space-y-6"
+                                                                    >
                                                                         <FormField
                                                                             control={form.control}
                                                                             name="companyName"
                                                                             render={({ field }) => (
                                                                                 <FormItem>
-                                                                                    <FormLabel>Enter Company or Enterprise Name</FormLabel>
+                                                                                    <FormLabel>Company Name</FormLabel>
                                                                                     <FormControl>
-                                                                                        <Input  {...field} />
+                                                                                        <Input {...field} />
                                                                                     </FormControl>
                                                                                     <FormDescription>
-                                                                                        This is the name by which you will manage the emails.
+                                                                                        Name used to identify this mailbox.
                                                                                     </FormDescription>
                                                                                     <FormMessage />
                                                                                 </FormItem>
                                                                             )}
                                                                         />
+
                                                                         <FormField
                                                                             control={form.control}
                                                                             name="senderEmail"
@@ -335,15 +331,16 @@ export default function ManageCreds() {
                                                                                 <FormItem>
                                                                                     <FormLabel>Sender Email</FormLabel>
                                                                                     <FormControl>
-                                                                                        <Input placeholder="deependra@rapydlaunch.com" {...field} />
+                                                                                        <Input {...field} />
                                                                                     </FormControl>
                                                                                     <FormDescription>
-                                                                                        This is the mail id which will be used to send mails.
+                                                                                        Email address used for sending mails.
                                                                                     </FormDescription>
                                                                                     <FormMessage />
                                                                                 </FormItem>
                                                                             )}
                                                                         />
+
                                                                         <FormField
                                                                             control={form.control}
                                                                             name="password"
@@ -351,24 +348,76 @@ export default function ManageCreds() {
                                                                                 <FormItem>
                                                                                     <FormLabel>Password</FormLabel>
                                                                                     <FormControl>
-                                                                                        <Input placeholder="abcd efgh ijkl" {...field} />
+                                                                                        <Input {...field} />
                                                                                     </FormControl>
                                                                                     <FormDescription>
-                                                                                        Provide the password of the above mentioned email for authentication purpose.
+                                                                                        Authentication password for this email.
                                                                                     </FormDescription>
                                                                                     <FormMessage />
                                                                                 </FormItem>
                                                                             )}
                                                                         />
+
                                                                         <Button disabled={isSubmitting} type="submit">
                                                                             Submit
                                                                         </Button>
                                                                     </form>
                                                                 </Form>
-                                                            </DialogDescription>
-                                                        </DialogHeader>
-                                                    </DialogContent>
-                                                </Dialog>
+                                                            </DialogContent>
+                                                        </Dialog>
+
+                                                        {/* ================= DELETE DIALOG ================= */}
+                                                        <Dialog
+                                                            open={deleteId === credential._id}
+                                                            onOpenChange={(isOpen) => {
+                                                                setDeleteId(isOpen ? credential._id : null);
+                                                            }}
+                                                        >
+                                                            <DialogTrigger asChild>
+                                                                <Button
+                                                                    className="bg-red-600"
+                                                                    onClick={() => setDeleteId(credential._id)}
+                                                                >
+                                                                    <Trash size={20} />
+                                                                </Button>
+                                                            </DialogTrigger>
+
+                                                            <DialogContent>
+                                                                <DialogHeader>
+                                                                    <DialogTitle>Confirm Deletion</DialogTitle>
+                                                                    <DialogDescription>
+                                                                        This action cannot be undone.
+                                                                    </DialogDescription>
+                                                                </DialogHeader>
+
+                                                                <p>
+                                                                    Are you sure you want to delete{" "}
+                                                                    <strong>{credential.companyName}</strong>?
+                                                                </p>
+
+                                                                <DialogFooter>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        onClick={() => setDeleteId(null)}
+                                                                    >
+                                                                        Cancel
+                                                                    </Button>
+
+                                                                    <Button
+                                                                        className="bg-red-600"
+                                                                        onClick={() => {
+                                                                            handleDelete(credential._id);
+                                                                            setDeleteId(null);
+                                                                        }}
+                                                                    >
+                                                                        Confirm Delete
+                                                                    </Button>
+                                                                </DialogFooter>
+                                                            </DialogContent>
+                                                        </Dialog>
+
+                                                    </div>
+                                                </div>
                                             </div>
                                         </Card>
                                     )

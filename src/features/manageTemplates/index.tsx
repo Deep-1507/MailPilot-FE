@@ -65,29 +65,49 @@ export default function ManageTemplate() {
   }
 
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  // const form = useForm<z.infer<typeof formSchema>>({
+  //   resolver: zodResolver(formSchema),
+  //   defaultValues: useMemo(() => ({
+  //     subject: selectedTemplate?.subject || '',
+  //     template: selectedTemplate?.template || '',
+  //     comments: selectedTemplate?.comments || '',
+  //   }), [selectedTemplate])
+  // });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: useMemo(() => ({
-      subject: selectedTemplate?.subject || '',
-      template: selectedTemplate?.template || '',
-      comments: selectedTemplate?.comments || '',
-    }), [selectedTemplate])
+    defaultValues: {
+      subject: "",
+      template: "",
+      comments: "",
+    },
   });
 
   const {
     formState: { isSubmitting }
   } = form;
 
+  // useEffect(() => {
+  //   if (selectedTemplate) {
+  //     form.reset({
+  //       subject: selectedTemplate.subject || "",
+  //       comments: selectedTemplate.comments || "",
+  //       template: selectedTemplate.template || "",
+  //     });
+  //   }
+  // }, [selectedTemplate, form]);
+
   useEffect(() => {
-    if (selectedTemplate) {
-      form.reset({
-        subject: selectedTemplate.subject || "",
-        comments: selectedTemplate.comments || "",
-        template: selectedTemplate.template || "",
-      });
-    }
-  }, [selectedTemplate, form]);
+    if (!selectedTemplate) return;
+
+    form.reset({
+      subject: selectedTemplate.subject,
+      template: selectedTemplate.template,
+      comments: selectedTemplate.comments,
+    });
+  }, [selectedTemplate]);
 
 
 
@@ -286,34 +306,40 @@ export default function ManageTemplate() {
                       </CardContent>
 
                       <div className='w-full flex justify-center pb-4'>
-                        <Dialog>
+                        <div className="w-full flex justify-center pb-4">
                           <div className="flex items-center gap-2">
-                            <DialogTrigger asChild>
-                              <Button onClick={() => setSelectedTemplate(template)}>
 
-                                <Pencil size={20} />
-                              </Button>
+                            {/* ========= EDIT ========= */}
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button onClick={() => setSelectedTemplate(template)}>
+                                  <Pencil size={20} />
+                                </Button>
+                              </DialogTrigger>
 
-                            </DialogTrigger>
-                            <Button onClick={() => handleDelete(template._id)} className="bg-red-600">
-                              <Trash size={20} />
-                            </Button>
-                          </div>
+                              <DialogContent className="max-w-2xl">
+                                <DialogHeader>
+                                  <DialogTitle>{selectedTemplate?.subject}</DialogTitle>
+                                  <DialogDescription>
+                                    Update your email template.
+                                  </DialogDescription>
+                                </DialogHeader>
 
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle><p>{selectedTemplate?.subject}</p></DialogTitle>
-                              <DialogDescription>
                                 <Form {...form}>
-                                  <form onSubmit={form.handleSubmit((data) => onSubmit(data, selectedTemplate?._id))} className="space-y-8">
+                                  <form
+                                    onSubmit={form.handleSubmit((data) =>
+                                      onSubmit(data, selectedTemplate?._id)
+                                    )}
+                                    className="space-y-6"
+                                  >
                                     <FormField
                                       control={form.control}
                                       name="subject"
                                       render={({ field }) => (
                                         <FormItem>
-                                          <FormLabel>Enter the Subject of the Template</FormLabel>
+                                          <FormLabel>Subject</FormLabel>
                                           <FormControl>
-                                            <Input  {...field} />
+                                            <Input {...field} />
                                           </FormControl>
                                           <FormDescription>
                                             This will be sent as the email subject.
@@ -322,6 +348,7 @@ export default function ManageTemplate() {
                                         </FormItem>
                                       )}
                                     />
+
                                     <FormField
                                       control={form.control}
                                       name="comments"
@@ -331,55 +358,102 @@ export default function ManageTemplate() {
                                           <FormControl>
                                             <Input {...field} />
                                           </FormControl>
-                                          <FormDescription>Write down any important notes for sending the email.</FormDescription>
+                                          <FormDescription>
+                                            Internal notes for this template.
+                                          </FormDescription>
                                           <FormMessage />
                                         </FormItem>
                                       )}
                                     />
+
                                     <FormField
                                       control={form.control}
                                       name="template"
                                       render={({ field }) => (
                                         <FormItem>
-                                          <FormLabel>Template</FormLabel>
+                                          <FormLabel>HTML Template</FormLabel>
                                           <FormControl>
                                             <Textarea
-                                              placeholder="Type your HTML template here..."
                                               {...field}
-                                              className="mb-4 h-40 resize-none"
-                                              onChange={(e) => {
-                                                field.onChange(e);
-                                                handleFileUpload(e);
-                                              }}
+                                              className="h-40 resize-none"
+                                              placeholder="Paste HTML here..."
                                             />
-
                                           </FormControl>
-                                          <div className="flex items-center">
-                                            <h2>OR</h2>
-                                          </div>
-                                          <div className="flex items-center gap-4 mt-2">
-                                            <input
-                                              type="file"
-                                              accept=".html"
-                                              id="htmlFile"
-                                              onChange={handleFileUpload}
-                                              className="cursor-pointer px-4 py-2 bg-secondary text-white rounded-lg"
-                                            />
-                                          </div>
-                                          <FormDescription>This template will be sent in the emails.</FormDescription>
+
+                                          <input
+                                            type="file"
+                                            accept=".html"
+                                            onChange={handleFileUpload}
+                                            className="mt-2"
+                                          />
+
+                                          <FormDescription>
+                                            Upload or paste your HTML template.
+                                          </FormDescription>
                                           <FormMessage />
                                         </FormItem>
                                       )}
                                     />
+
                                     <Button disabled={isSubmitting} type="submit">
-                                      Submit
+                                      Save Changes
                                     </Button>
                                   </form>
                                 </Form>
-                              </DialogDescription>
-                            </DialogHeader>
-                          </DialogContent>
-                        </Dialog>
+                              </DialogContent>
+                            </Dialog>
+
+                            {/* ========= DELETE ========= */}
+                            <Dialog
+                              open={deleteId === template._id}
+                              onOpenChange={(isOpen) =>
+                                setDeleteId(isOpen ? template._id : null)
+                              }
+                            >
+                              <DialogTrigger asChild>
+                                <Button
+                                  className="bg-red-600"
+                                  onClick={() => setDeleteId(template._id)}
+                                >
+                                  <Trash size={20} />
+                                </Button>
+                              </DialogTrigger>
+
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Delete Template</DialogTitle>
+                                  <DialogDescription>
+                                    This action cannot be undone.
+                                  </DialogDescription>
+                                </DialogHeader>
+
+                                <p>
+                                  Delete <strong>{template.subject}</strong>?
+                                </p>
+
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    variant="outline"
+                                    onClick={() => setDeleteId(null)}
+                                  >
+                                    Cancel
+                                  </Button>
+
+                                  <Button
+                                    className="bg-red-600"
+                                    onClick={() => {
+                                      handleDelete(template._id);
+                                      setDeleteId(null);
+                                    }}
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+
+                          </div>
+                        </div>
                       </div>
                     </Card>
                   )
