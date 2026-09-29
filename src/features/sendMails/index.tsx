@@ -58,6 +58,9 @@ export default function SendMails() {
   const [apiKey, setapiKey] = useState("");
   const [subject, setSubject] = useState("");
   const [comments, setComments] = useState("");
+
+  const MICROSERIVE_BACKEND_URL = import.meta.env.MICROSERIVE_BACKEND_URL;
+
   interface Template {
     _id: string;
     subject: string;
@@ -389,7 +392,7 @@ export default function SendMails() {
   
       console.log(dataToSend);
   
-      const response = await axios.post(`${BACKEND_URL}/api/v4/sendmail`, dataToSend, {
+      const response = await axios.post(`${MICROSERIVE_BACKEND_URL}/api/v4/sendmail`, dataToSend, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
