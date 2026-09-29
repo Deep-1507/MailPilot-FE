@@ -59,8 +59,6 @@ export default function SendMails() {
   const [subject, setSubject] = useState("");
   const [comments, setComments] = useState("");
 
-  const MICROSERIVE_BACKEND_URL = import.meta.env.MICROSERIVE_BACKEND_URL;
-
   interface Template {
     _id: string;
     subject: string;
@@ -370,8 +368,13 @@ export default function SendMails() {
     
   
     try {
+
+      console.log("Reached here")
   
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+      const MICROSERIVE_BACKEND_URL = import.meta.env.VITE_MICROSERIVE_BACKEND_URL;
+
+      console.log(MICROSERIVE_BACKEND_URL)
+
       const token = localStorage.getItem("token");
   
       if (!token) {
@@ -380,7 +383,7 @@ export default function SendMails() {
         return;
       }
   
-      if (!BACKEND_URL) {
+      if (!MICROSERIVE_BACKEND_URL) {
         throw new Error("BACKEND_URL is not defined");
       }
   
